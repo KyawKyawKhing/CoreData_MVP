@@ -7,6 +7,11 @@
 //
 
 import Foundation
-struct UserData {
-
+struct UserData:Codable{
+    var name:String
+    var email:String
+    var address:String
+    var phone:String
+    var education:String
+    var bio:String
 }

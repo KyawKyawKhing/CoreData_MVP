@@ -15,12 +15,21 @@ class UserTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        title.layer.borderWidth = 2
+        title.layer.masksToBounds = false
+        title.layer.borderColor = UIColor.white.cgColor
+        title.layer.cornerRadius = (title.frame.width+title.frame.height)/4
+        title.clipsToBounds = true
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+    }
+    
+    func setData(data:UserData) {
+        title.text = "\(data.name.first ?? "K")"
+        name.text = data.name
+        email.text = data.email
     }
     
 }

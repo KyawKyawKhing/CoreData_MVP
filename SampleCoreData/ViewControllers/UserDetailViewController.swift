@@ -9,27 +9,47 @@
 import UIKit
 
 class UserDetailViewController: UIViewController {
-
+    var userData:UserData?
+    @IBOutlet weak var edtName: UITextField!
+    @IBOutlet weak var edtEmail: UITextField!
+    @IBOutlet weak var edtAddress: UITextField!
+    
+    var mPresenter:UserDetailPresenter!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        mPresenter = UserDetailPresenter(delegate: self)
+        displayUserDetail(data: userData!)
 
-        // Do any additional setup after loading the view.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    @IBAction func onClickUpdateUser(_ sender: UIButton) {
+//        let message = "Name : \(edtName.text ?? "") \n Email : \(edtEmail.text ?? "") \n Address : \(edtAddress.text ?? "") "
+//        Utils.showAlert(viewcontroller: self, title: "User Information", message: message)
+      
+        var updateData = userData
+        updateData?.name = edtName.text ?? ""
+        updateData?.email = edtEmail.text ?? ""
+        updateData?.address = edtAddress.text ?? ""
+        
+        mPresenter.updateUserData(oldData:userData!,newData:updateData!)
+    }
+}
+extension UserDetailViewController:UserDetailDelegate{
+    func displayUserDetail(data: UserData) {
+        edtName.text = data.name
+        edtEmail.text = data.email
+        edtAddress.text = data.address
+        
+    }
+    func displayUpdateUserDetail(data:UserData,message:String){
+        displayUserDetail(data: data)
+        Utils.showAlert(viewcontroller: self, title: "Update", message: "Successfully Updated")
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func displayErrorMessage(message: String) {
+        Utils.showAlert(viewcontroller: self, title: "Error", message: message)
     }
-    */
-
+    
+    
 }
