@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import CoreData
+
 class UserModel{
     var managedContext:NSManagedObjectContext!
     var insertUser:NSManagedObject!
@@ -22,7 +23,7 @@ class UserModel{
         fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
     }
     
-    func getUserList(callback:GetUserListCallback) {
+    func getUserList(success: @escaping ([UserData]) -> Void,failure: @escaping (String) -> Void) {
         do {
             fetchRequest.sortDescriptors = [NSSortDescriptor.init(key: "name", ascending: true)]
             var dataArray:[UserData] = []
@@ -40,15 +41,15 @@ class UserModel{
                 dataArray.append(userData)
                 }
             }
-            callback.SucceedGetUserList(dataList:dataArray)
+            success(dataArray)
             
         } catch let error as NSError  {
-            callback.FailedGetUserList(message: "\(error.userInfo)")
+            failure(error.localizedDescription)
         }
         
     }
     
-    func addUserData(userData:UserData,callback:AddUserCallback){
+    func addUserData(userData:UserData,success: @escaping (String) -> Void,failure: @escaping (String) -> Void){
         insertUser.setValue(userData.name, forKeyPath: "name")
         insertUser.setValue(userData.email, forKey: "email")
         insertUser.setValue(userData.address, forKey: "address")
@@ -57,15 +58,15 @@ class UserModel{
         insertUser.setValue(userData.bio, forKey: "bio")
         do {
             try managedContext.save()
-            callback.SuccedAddUser(message: "Successfully Added UserData")
+            success("Successfully Added UserData")
         } catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")
-            callback.FailedAddUser(message: "\(error.userInfo)")
+            failure(error.localizedDescription)
         }
     }
     
     
-    func updateUserData(oldData:UserData,newData:UserData,callback:UpdateUserCallback){
+    func updateUserData(oldData:UserData,newData:UserData,success: @escaping (String) -> Void,failure: @escaping (String) -> Void){
         let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "User")
         fetchRequest.predicate = NSPredicate(format: "name = %@", oldData.name)
         fetchRequest.predicate = NSPredicate(format: "email = %@", oldData.email)
@@ -82,21 +83,21 @@ class UserModel{
             objectUpdate.setValue(newData.bio, forKey: "bio")
             do{
                 try managedContext.save()
-            callback.SucceedUpdateUser(data:newData,messsage: "Successfully Added UserData")
+                success("Successfully Added UserData")
             }
             catch
             {
                 print(error)
-                callback.FailedGetUpdate(message: "\(error.localizedDescription)")
+                failure(error.localizedDescription)
             }
         }
         catch
         {
             print(error)
-            callback.FailedGetUpdate(message: "\(error.localizedDescription)")
+            failure(error.localizedDescription)
         }
     }
-    func deleteUserData(userData:UserData,callback:DeleteUserCallback){
+    func deleteUserData(userData:UserData,success: @escaping (String) -> Void,failure: @escaping (String) -> Void){
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
         fetchRequest.predicate = NSPredicate(format: "name = %@", userData.name)
@@ -110,19 +111,19 @@ class UserModel{
             
             do{
                 try managedContext.save()
-                callback.SuccedDeleteUser(message: "Successfully Deleted")
+                success("Successfully Deleted")
             }
             catch
             {
                 print(error)
-                callback.FailedDeleteUser(message: "\(error.localizedDescription)")
+                failure(error.localizedDescription)
             }
             
         }
         catch
         {
             print(error)
-            callback.FailedDeleteUser(message: "\(error.localizedDescription)")
+            failure(error.localizedDescription)
         }
     }
     

@@ -12,7 +12,7 @@ protocol HomeDelegate {
     func displayErrorMessage(message:String)
     func reloadData(message:String)
 }
-class HomePresenter:GetUserListCallback,DeleteUserCallback {
+class HomePresenter {
     
     var delegate:HomeDelegate
     var userModel:UserModel = UserModel()
@@ -22,28 +22,18 @@ class HomePresenter:GetUserListCallback,DeleteUserCallback {
     }
     
     func getUserList(){
-        userModel.getUserList(callback:self )
+        userModel.getUserList(success: { (userDataList) in
+            self.delegate.displayUserList(dataList: userDataList)
+        }) { (errorMessage) in
+            self.delegate.displayErrorMessage(message: errorMessage)
+        }
     }
     
     func deleteUserData(userData:UserData){
-        userModel.deleteUserData(userData: userData, callback: self)
+        userModel.deleteUserData(userData: userData, success: {(successMessage) in
+            self.delegate.reloadData(message: successMessage)
+        }, failure: {(errorMessage) in
+            self.delegate.displayErrorMessage(message: errorMessage)
+        })
     }
-    
-    func SucceedGetUserList(dataList: [UserData]) {
-        delegate.displayUserList(dataList: dataList)
-    }
-    
-    func FailedGetUserList(message: String) {
-        delegate.displayErrorMessage(message: message)
-    }
-    
-    
-    func SuccedDeleteUser(message: String) {
-        delegate.reloadData(message: message)
-    }
-    
-    func FailedDeleteUser(message: String) {
-        delegate.displayErrorMessage(message: message)
-    }
-    
 }

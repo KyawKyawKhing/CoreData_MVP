@@ -8,11 +8,10 @@
 
 import Foundation
 protocol UserDetailDelegate {
-    func displayUserDetail(data:UserData)
-    func displayUpdateUserDetail(data:UserData,message:String)
+    func displayUpdateUserDetail(message:String)
     func displayErrorMessage(message:String)
 }
-class UserDetailPresenter:UpdateUserCallback{
+class UserDetailPresenter{
     var delegate:UserDetailDelegate
     var userModel:UserModel = UserModel()
     
@@ -21,16 +20,10 @@ class UserDetailPresenter:UpdateUserCallback{
     }
     
     func updateUserData(oldData:UserData,newData:UserData){
-        userModel.updateUserData(oldData:oldData,newData:newData, callback: self)
+        userModel.updateUserData(oldData:oldData,newData:newData, success: {(successMessage) in
+            self.delegate.displayUpdateUserDetail(message: successMessage)
+        }, failure: {(errorMessage) in
+            self.delegate.displayErrorMessage(message: errorMessage)
+        })
     }
-    
-    func SucceedUpdateUser(data: UserData, messsage: String) {
-        delegate.displayUpdateUserDetail(data: data,message: messsage)
-    }
-    
-    func FailedGetUpdate(message: String) {
-        delegate.displayErrorMessage(message: message)
-        
-    }
-    
 }

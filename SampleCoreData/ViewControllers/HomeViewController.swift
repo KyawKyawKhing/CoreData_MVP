@@ -86,10 +86,8 @@ extension HomeViewController:UITableViewDelegate{
                 
                 let okAction = UIAlertAction(title: "OK", style: .default){
                     response -> Void in
-                    let index = indexPath.row
                     let data = self.userListDataSource.dataArray[indexPath.row-1]
-                    
-                    self.mPresenter.deleteUserData(userData: self.userListDataSource.dataArray[indexPath.row-1])
+                    self.mPresenter.deleteUserData(userData: data)
                 }
                 alert.addAction(okAction)
                 

@@ -42,6 +42,15 @@ class UserDetailViewController: UIViewController,UITextFieldDelegate {
         
     }
     
+    func displayUserDetail(data: UserData) {
+        edtName.text = data.name
+        edtEmail.text = data.email
+        edtAddress.text = data.address
+        edtPhone.text = data.phone
+        edtEducation.text = data.education
+        edtBio.text = data.bio
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
@@ -68,17 +77,11 @@ class UserDetailViewController: UIViewController,UITextFieldDelegate {
         } else {
 //                        view.frame.origin.y = 0
             scrollView.contentInset = UIEdgeInsets.zero
-            
         }
-        
         scrollView.scrollIndicatorInsets = scrollView.contentInset
-        
     }
 
     @IBAction func onClickUpdateUser(_ sender: UIButton) {
-//        let message = "Name : \(edtName.text ?? "") \n Email : \(edtEmail.text ?? "") \n Address : \(edtAddress.text ?? "") "
-//        Utils.showAlert(viewcontroller: self, title: "User Information", message: message)
-      
         var updateData = userData
         updateData?.name = edtName.text ?? ""
         updateData?.email = edtEmail.text ?? ""
@@ -90,22 +93,15 @@ class UserDetailViewController: UIViewController,UITextFieldDelegate {
     }
  }
 extension UserDetailViewController:UserDetailDelegate{
-    func displayUserDetail(data: UserData) {
-        edtName.text = data.name
-        edtEmail.text = data.email
-        edtAddress.text = data.address
-        edtPhone.text = data.phone
-        edtEducation.text = data.education
-        edtBio.text = data.bio
-    }
-    func displayUpdateUserDetail(data:UserData,message:String){
-        displayUserDetail(data: data)
-        Utils.showAlert(viewcontroller: self, title: "Update", message: "Successfully Updated")
+   
+    func displayUpdateUserDetail(message:String){
+        Utils.showAlert(viewcontroller: self, title: "Update", message: "Successfully Updated",action: {
+            self.navigationController?.popViewController(animated: true)
+        })
     }
     
     func displayErrorMessage(message: String) {
         Utils.showAlert(viewcontroller: self, title: "Error", message: message)
     }
-    
     
 }

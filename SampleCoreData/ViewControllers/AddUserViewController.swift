@@ -110,9 +110,10 @@ class AddUserViewController: UIViewController,UITextFieldDelegate {
     
 }
 extension AddUserViewController:AddUserDelegate{
-    func displaySuccessfuleMessage(message: String) {
-//        self.dismiss(animated: true, completion: nil)
-        Utils.showAlert(viewcontroller: self, title: "Add", message: message)
+    func displaySuccessfulMessage(message: String) {
+        Utils.showAlert(viewcontroller: self, title: "Add", message: message,action: {
+            self.navigationController?.popViewController(animated: true)
+        })
     }
     
     func displayErrorMessage(message: String) {

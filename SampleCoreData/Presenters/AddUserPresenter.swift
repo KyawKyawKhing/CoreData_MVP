@@ -8,10 +8,10 @@
 
 import Foundation
 protocol AddUserDelegate {
-    func displaySuccessfuleMessage(message:String)
+    func displaySuccessfulMessage(message:String)
     func displayErrorMessage(message:String)
 }
-class AddUserPresenter:AddUserCallback {
+class AddUserPresenter {
     
     var delegate:AddUserDelegate
     var userModel:UserModel = UserModel()
@@ -21,15 +21,10 @@ class AddUserPresenter:AddUserCallback {
     }
     
     func addUserData(userData:UserData){
-        userModel.addUserData(userData: userData, callback: self)
+        userModel.addUserData(userData: userData, success: {(successMessage) in
+            self.delegate.displaySuccessfulMessage(message: successMessage)
+        }, failure: {(errorMessage) in
+            self.delegate.displayErrorMessage(message: errorMessage)
+        })
     }
-  
-    func SuccedAddUser(message: String) {
-        delegate.displaySuccessfuleMessage(message: message)
-    }
-    
-    func FailedAddUser(message: String) {
-        delegate.displayErrorMessage(message: message)
-    }
-    
 }
