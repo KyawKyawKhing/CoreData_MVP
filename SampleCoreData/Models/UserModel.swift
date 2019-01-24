@@ -34,6 +34,9 @@ class UserModel{
                 userData.name = data.value(forKey: "name") as! String
                 userData.email = data.value(forKey: "email") as! String
                 userData.address = data.value(forKey: "address") as! String
+                userData.phone = data.value(forKey: "phone") as! String
+                userData.education = data.value(forKey: "education") as! String
+                userData.bio = data.value(forKey: "bio") as! String
                 dataArray.append(userData)
                 }
             }
@@ -98,7 +101,6 @@ class UserModel{
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
         fetchRequest.predicate = NSPredicate(format: "name = %@", userData.name)
         fetchRequest.predicate = NSPredicate(format: "email = %@", userData.email)
-        
         do
         {
             let test = try managedContext.fetch(fetchRequest)

@@ -17,9 +17,12 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         mPresenter = HomePresenter(delegate: self)//don't forget to initialize
         self.userTableView.register(UINib(nibName: "UserTableViewCell", bundle: nil), forCellReuseIdentifier: "UserTableViewCell")
-        userListDataSource = self.userTableView.dataSource as! UserListDataSource
+        userListDataSource = self.userTableView.dataSource as? UserListDataSource
     }
     override func viewDidAppear(_ animated: Bool) {
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         mPresenter.getUserList()
     }
     @IBAction func clickOnBarButtonItem(_ sender: UIBarButtonItem){
@@ -49,6 +52,19 @@ extension HomeViewController:HomeDelegate{
     
 }
 extension HomeViewController:UITableViewDelegate{
+    
+    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
+        
+        print("did end editing row at \(indexPath!.row)")
+        self.mPresenter.deleteUserData(userData: self.userListDataSource.dataArray[indexPath!.row-1])
+    }
+    
+    func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
+        
+//        self.mPresenter.deleteUserData(userData: self.userListDataSource.dataArray[indexPath.row-1])
+        print("will begin editing row at \(indexPath.row)")
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         let userData = userListDataSource.dataArray[indexPath.row]
@@ -67,9 +83,13 @@ extension HomeViewController:UITableViewDelegate{
                 let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
                 alert.addAction(cancelAction)
                 
+                
                 let okAction = UIAlertAction(title: "OK", style: .default){
                     response -> Void in
-                    self.mPresenter.deleteUserData(userData: self.userListDataSource.dataArray[indexPath.row])
+                    let index = indexPath.row
+                    let data = self.userListDataSource.dataArray[indexPath.row-1]
+                    
+                    self.mPresenter.deleteUserData(userData: self.userListDataSource.dataArray[indexPath.row-1])
                 }
                 alert.addAction(okAction)
                 
